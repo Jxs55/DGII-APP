@@ -1,34 +1,35 @@
+using DGII.Core.Interfaces;
+using DGII.Core.Services;
+using DGII.Infrastructure.Data;
+using DGII.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Serilog;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+builder.Host.UseSerilog();
+
+builder.Services.AddControllers();
+builder.Services.AddDbContext<DgiiDbContext>(opt =>
+    opt.UseSqlite("Data Source=dgii.db"));
+
+builder.Services.AddScoped<IContribuyenteRepository, ContribuyenteRepository>();
+builder.Services.AddScoped<IComprobanteFiscalRepository, ComprobanteFiscalRepository>();
+builder.Services.AddScoped<ContribuyenteService>();
+builder.Services.AddScoped<ComprobanteFiscalService>();
+
+builder.Services.AddCors(opt => opt.AddPolicy("AllowFrontend",
+    p => p.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod()));
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-
-app.UseHttpsRedirection();
-
-var summaries = new[]
+using (var scope = app.Services.CreateScope())
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-});
-
-app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    var db = scope.ServiceProvider.GetRequiredService<DgiiDbContext>();
+    db.Database.Migrate();
 }
+
+app.UseCors("AllowFrontend");
+app.MapControllers();
+app.Run();
