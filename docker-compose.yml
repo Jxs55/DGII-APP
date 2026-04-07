@@ -1,14 +1,16 @@
-version: '3.8'
-
 services:
   api:
-    build: ./backend/DGII.API
+    build:
+      context: ./backend
+      dockerfile: DGII.API/Dockerfile
     ports:
       - "5000:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
 
   frontend:
+    depends_on:
+      - api
     build: ./frontend
     ports:
       - "3000:3000"
