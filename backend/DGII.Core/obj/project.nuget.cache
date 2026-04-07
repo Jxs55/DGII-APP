@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "/bX2RXZkfwCy6xa8prEUD5WZjMrNi5+tooz281KCEeNpNS2zhrBGIu3AFOzN+DsaZx2xMyJMUb4Ob6C+L/8P8g==",
+  "success": true,
+  "projectFilePath": "/home/jxs/repos/dgii-app/backend/DGII.Core/DGII.Core.csproj",
+  "expectedPackageFiles": [
+    "/home/jxs/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.25/microsoft.aspnetcore.app.ref.8.0.25.nupkg.sha512"
+  ],
+  "logs": []
+}
