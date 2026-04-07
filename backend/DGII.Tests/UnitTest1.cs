@@ -2,6 +2,7 @@ using DGII.Core.Entities;
 using DGII.Core.Interfaces;
 using DGII.Core.Services;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace DGII.Tests;
@@ -17,8 +18,9 @@ public class ContribuyenteServiceTests
         };
 
         var repoMock = new Mock<IContribuyenteRepository>();
+        var loggerMock = new Mock<ILogger<ContribuyenteService>>();
         repoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(expected);
-        var service = new ContribuyenteService(repoMock.Object);
+        var service = new ContribuyenteService(repoMock.Object, loggerMock.Object);
 
         var result = await service.GetAllAsync();
 
@@ -33,8 +35,9 @@ public class ContribuyenteServiceTests
         var expected = new Contribuyente { RncCedula = rnc, Nombre = "JUAN PEREZ" };
 
         var repoMock = new Mock<IContribuyenteRepository>();
+        var loggerMock = new Mock<ILogger<ContribuyenteService>>();
         repoMock.Setup(r => r.GetByRncAsync(rnc)).ReturnsAsync(expected);
-        var service = new ContribuyenteService(repoMock.Object);
+        var service = new ContribuyenteService(repoMock.Object, loggerMock.Object);
 
         var result = await service.GetByRncAsync(rnc);
 
@@ -48,8 +51,9 @@ public class ContribuyenteServiceTests
         const string rnc = "00000000000";
 
         var repoMock = new Mock<IContribuyenteRepository>();
+        var loggerMock = new Mock<ILogger<ContribuyenteService>>();
         repoMock.Setup(r => r.GetByRncAsync(rnc)).ReturnsAsync((Contribuyente?)null);
-        var service = new ContribuyenteService(repoMock.Object);
+        var service = new ContribuyenteService(repoMock.Object, loggerMock.Object);
 
         var result = await service.GetByRncAsync(rnc);
 
@@ -61,8 +65,9 @@ public class ContribuyenteServiceTests
     public async Task GetAllAsync_PropagatesException_WhenRepositoryFails()
     {
         var repoMock = new Mock<IContribuyenteRepository>();
+        var loggerMock = new Mock<ILogger<ContribuyenteService>>();
         repoMock.Setup(r => r.GetAllAsync()).ThrowsAsync(new InvalidOperationException("Repo failed"));
-        var service = new ContribuyenteService(repoMock.Object);
+        var service = new ContribuyenteService(repoMock.Object, loggerMock.Object);
 
         var act = async () => await service.GetAllAsync();
 
@@ -81,8 +86,9 @@ public class ComprobanteFiscalServiceTests
         };
 
         var repoMock = new Mock<IComprobanteFiscalRepository>();
+        var loggerMock = new Mock<ILogger<ComprobanteFiscalService>>();
         repoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(expected);
-        var service = new ComprobanteFiscalService(repoMock.Object);
+        var service = new ComprobanteFiscalService(repoMock.Object, loggerMock.Object);
 
         var result = await service.GetAllAsync();
 
@@ -101,8 +107,9 @@ public class ComprobanteFiscalServiceTests
         };
 
         var repoMock = new Mock<IComprobanteFiscalRepository>();
+        var loggerMock = new Mock<ILogger<ComprobanteFiscalService>>();
         repoMock.Setup(r => r.GetByRncAsync(rnc)).ReturnsAsync(expected);
-        var service = new ComprobanteFiscalService(repoMock.Object);
+        var service = new ComprobanteFiscalService(repoMock.Object, loggerMock.Object);
 
         var result = await service.GetByRncAsync(rnc);
 
@@ -117,8 +124,9 @@ public class ComprobanteFiscalServiceTests
         const decimal expectedTotal = 216m;
 
         var repoMock = new Mock<IComprobanteFiscalRepository>();
+        var loggerMock = new Mock<ILogger<ComprobanteFiscalService>>();
         repoMock.Setup(r => r.GetTotalItbisByRncAsync(rnc)).ReturnsAsync(expectedTotal);
-        var service = new ComprobanteFiscalService(repoMock.Object);
+        var service = new ComprobanteFiscalService(repoMock.Object, loggerMock.Object);
 
         var result = await service.GetTotalItbisByRncAsync(rnc);
 
@@ -132,8 +140,9 @@ public class ComprobanteFiscalServiceTests
         const string rnc = "98754321012";
 
         var repoMock = new Mock<IComprobanteFiscalRepository>();
+        var loggerMock = new Mock<ILogger<ComprobanteFiscalService>>();
         repoMock.Setup(r => r.GetTotalItbisByRncAsync(rnc)).ThrowsAsync(new InvalidOperationException("Repo failed"));
-        var service = new ComprobanteFiscalService(repoMock.Object);
+        var service = new ComprobanteFiscalService(repoMock.Object, loggerMock.Object);
 
         var act = async () => await service.GetTotalItbisByRncAsync(rnc);
 
