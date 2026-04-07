@@ -39,7 +39,12 @@ public class ComprobanteFiscalRepository(DgiiDbContext context, ILogger<Comproba
     {
         try
         {
-            return await context.ComprobantesFiscales.Where(c => c.RncCedula == rncCedula).SumAsync(c => c.Itbis18);
+            var itbisValues = await context.ComprobantesFiscales
+                .Where(c => c.RncCedula == rncCedula)
+                .Select(c => c.Itbis18)
+                .ToListAsync();
+
+            return itbisValues.Sum();
         }
         catch (Exception ex)
         {
