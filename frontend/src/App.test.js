@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import App from './App';
 
 jest.mock('./api/dgiiApi', () => ({
@@ -7,9 +7,12 @@ jest.mock('./api/dgiiApi', () => ({
   getTotalItbis: jest.fn(() => Promise.resolve({ data: { totalItbis: 0 } })),
 }));
 
-test('renders DGII main screen', () => {
+test('renders DGII main screen', async () => {
   render(<App />);
 
   expect(screen.getByRole('heading', { name: /consulta dgii/i })).toBeInTheDocument();
-  expect(screen.getByLabelText(/contribuyente/i)).toBeInTheDocument();
+
+  await waitFor(() => {
+    expect(screen.getByLabelText(/contribuyente/i)).not.toBeDisabled();
+  });
 });
